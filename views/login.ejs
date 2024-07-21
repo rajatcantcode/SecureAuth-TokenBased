@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <link rel="stylesheet" href="/css/output.css">
+</head>
+
+<body class="h-screen w-full bg-zinc-900 flex items-center justify-center">
+    <div class="border border-white p-6 rounded-lg bg-zinc-800 shadow-lg max-w-sm w-full">
+        <form class="flex flex-col space-y-4" id="loginForm" onsubmit="handleSubmit(event)">
+            <!-- Username -->
+            <div class="flex flex-col">
+                <label class="text-white text-md mb-2" for="username">Username</label>
+                <input id="username"
+                    class="p-2 rounded bg-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    type="text" />
+            </div>
+            <!-- Email -->
+            <div class="flex flex-col">
+                <label class="text-white text-md mb-2" for="username">Email</label>
+                <input id="username"
+                    class="p-2 rounded bg-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    type="email" pattern=".+@example\.com" />
+            </div>
+            <!-- Password -->
+            <div class="flex flex-col">
+                <label class="text-white text-md mb-2" for="password">Password</label>
+                <input id="password"
+                    class="p-2 rounded bg-zinc-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    type="password" />
+                <button type="button" id="togglePassword" class="mt-2 text-white">Show Password</button>
+            </div>
+            <!-- Login Button -->
+            <button
+                class="mt-4 bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200">Login</button>
+        </form>
+    </div>
+    <script type="module" src="/js/auth.js"></script>
+</body>
+
+</html>
