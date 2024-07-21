@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { protected } = require("../middleware/isLoggedIn.middleware");
 
 const {
   registerUser,
@@ -11,6 +12,6 @@ const {
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/logout", logoutUser);
-router.post("/profile", profileUser);
+router.post("/profile", protected, profileUser);
 
 module.exports = router;

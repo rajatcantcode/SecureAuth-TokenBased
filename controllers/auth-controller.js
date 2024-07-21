@@ -9,9 +9,10 @@ module.exports.registerUser = async (req, res) => {
     let user = await userSchema.findOne({ email });
 
     if (user) {
-      return res
-        .status(400)
-        .json({ message: "You are already registered 😅 . Pls Login" });
+      return res.status(400).json({
+        message: "You are already registered 😅 . Pls Login",
+        user: user,
+      });
     }
 
     // Encrypting the password
@@ -25,12 +26,12 @@ module.exports.registerUser = async (req, res) => {
       password: hashedPassword,
     });
 
-    // Now the user has been registered it's time to login the user automatically
+    // Generate a token for the user
     const token = generateJwtToken({ email });
     res.cookie("token", token, {
-      expires: new Date(Date.now() + 8 * 3600000), // cookie will be removed after 8 hours
+      expires: new Date(Date.now() + 8 * 3600000), // Cookie will expire in 8 hours
       httpOnly: true,
-      secure: true,
+      secure: true, // Use secure flag if using HTTPS
     });
 
     res.status(200).json({
@@ -44,14 +45,49 @@ module.exports.registerUser = async (req, res) => {
   }
 };
 
-module.exports.loginUser = (req, res) => {
-  res.send("Login User");
+module.exports.loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await userSchema.findOne({ email });
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "User not found, kindly register first." });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid password." });
+    }
+
+    // Generate a token for the user
+    const token = generateJwtToken({ email });
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 8 * 3600000), // Cookie will expire in 8 hours
+      httpOnly: true,
+      secure: true, // Use secure flag if using HTTPS
+    });
+
+    res.status(200).json({
+      message: "User logged in successfully 🎉",
+      user,
+    });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Something went wrong", error: err.message });
+  }
 };
 
 module.exports.logoutUser = (req, res) => {
-  res.send("Logout User");
+  res.clearCookie("token");
+  res.status(200).json({ message: "User logged out successfully 🎉" });
 };
 
 module.exports.profileUser = (req, res) => {
-  res.send("Profile User");
+  // req.user is available because of the protected middleware
+  // Note that the password field is not sent
+  res.status(200).json({ user: req.user });
 };
